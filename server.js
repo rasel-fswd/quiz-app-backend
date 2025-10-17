@@ -3,20 +3,24 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-// Imports
+// Imported files
+const authRoutes = require('./routes/authRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const connectDB = require('./db/connect');
 
 const app = express();
 
-// Middlewares
+// Middleware
 app.use(cors());
 app.use(express.json());
 
 //Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/v1/quizzes', quizRoutes);
-app.use('/api/v1/submissions', submissionRoutes);
+app.use('/api/submissions', submissionRoutes);
+app.use('/api/admin', adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 

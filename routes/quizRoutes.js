@@ -1,10 +1,10 @@
 const express = require('express');
-
 const Question = require('../models/Question');
+const { authenticate, isAdmin } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Get all questions
+// All questions
 router.get('/', async (req, res) => {
   try {
     const questions = await Question.find();
@@ -14,20 +14,17 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get one question
 router.get('/:id', async (req, res) => {
   try {
     const quiz = await Question.findById(req.params.id);
-
     if (!quiz) return res.status(404).json({ message: 'Quiz not found' });
-
     res.json(quiz);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching quiz' });
   }
 });
 
-// Admin: Create a question (use middleware authenticate, isAdmin)
+// Admin: Create a quiz (use middleware authenticate, isAdmin)
 router.post('/', async (req, res) => {
   const { question, options, correctAnswer } = req.body;
 
@@ -40,26 +37,22 @@ router.post('/', async (req, res) => {
       options,
       correctAnswer,
     });
-
     res.status(201).json({ message: 'Question created', newQuestion });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Admin: Update a question (use middleware authenticate, isAdmin)
+// Admin: Update a quiz (use middleware authenticate, isAdmin)
 router.put('/:id', async (req, res) => {
   const { question, options, correctAnswer } = req.body;
 
   try {
     const quiz = await Question.findByIdAndUpdate(
       req.params.id,
-
       { question, options, correctAnswer },
-
       { new: true }
     );
-
     if (!quiz) return res.status(404).json({ message: 'Question not found' });
 
     res.json({ message: 'Question updated', quiz });
@@ -68,11 +61,12 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Admin: Delete a question (use middleware authenticate, isAdmin)
+// Admin: Delete a quiz (use middleware authenticate, isAdmin)
 router.delete('/:id', async (req, res) => {
   try {
     const quiz = await Question.findByIdAndDelete(req.params.id);
     if (!quiz) return res.status(404).json({ message: 'Question not found' });
+
     res.json({ message: 'Question deleted' });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
