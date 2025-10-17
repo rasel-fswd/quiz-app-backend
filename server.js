@@ -5,6 +5,7 @@ require('dotenv').config();
 
 // Imports
 const quizRoutes = require('./routes/quizRoutes');
+const submissionRoutes = require('./routes/submissionRoutes');
 const connectDB = require('./db/connect');
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 //Routes
 app.use('/api/v1/quizzes', quizRoutes);
+app.use('/api/v1/submissions', submissionRoutes);
 
 const PORT = process.env.PORT || 5000;
 
